@@ -28,15 +28,16 @@ export interface Claim {
 }
 
 // ==========================================
-// ENUMS (At least 1 required)
+// CONSTANTS + LITERAL TYPES (At least 1 required)
 // ==========================================
 
-// Regular enum for multi-step lifecycle status
-export enum ClaimStatus {
-  Pending,
-  Approved,
-  Rejected,
-}
+export const ClaimStatus = {
+  Pending: "Pending",
+  Approved: "Approved",
+  Rejected: "Rejected",
+} as const;
+
+export type ClaimStatus = (typeof ClaimStatus)[keyof typeof ClaimStatus];
 
 // ==========================================
 // GENERIC INTERFACES (At least 1 required)

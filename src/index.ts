@@ -1,13 +1,12 @@
-import { 
-  User, 
-  LostItem, 
-  Claim, 
-  ClaimStatus, 
-  ApiResponse, 
-  ItemUpdate, 
-  PublicUser, 
-  ClaimSummaryCount 
-} from "../types/index";
+import { ClaimStatus } from "./types/index";
+import type {
+  User,
+  LostItem,
+  ApiResponse,
+  ItemUpdate,
+  PublicUser,
+  ClaimSummaryCount,
+} from "./types/index";
 
 // ==========================================
 // GENERIC FUNCTIONS (At least 1 required)
@@ -56,11 +55,15 @@ const userApiResponse: ApiResponse<User> = {
   success: true,
   data: mockUser,
 };
+console.log("User API response:", userApiResponse);
 
 // Testing Utility Types
 const itemPatch: ItemUpdate = { description: "Updated: Found near the projector." };
 const publicProfile: PublicUser = { id: 1, name: "Juan dela Cruz", role: "student" };
 const dashboardStats: ClaimSummaryCount = { pending: 5, approved: 12, rejected: 2 };
+console.log("Patch payload:", itemPatch);
+console.log("Public profile:", publicProfile);
+console.log("Dashboard stats:", dashboardStats);
 
 // Testing Enums
 let currentClaimStatus: ClaimStatus = ClaimStatus.Pending;
