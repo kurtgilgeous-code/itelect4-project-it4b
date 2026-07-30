@@ -1,16 +1,19 @@
 import type { Claim } from "../types/index";
+import type { ReactNode } from "react";
 
 interface ClaimBadgeProps {
   claim?: Claim;
   claimedBy: string;
+  children?: ReactNode;
 }
 
-const ClaimBadge = ({ claim, claimedBy }: ClaimBadgeProps) => {
+const ClaimBadge = ({ claim, claimedBy, children }: ClaimBadgeProps) => {
   if (!claim) {
     return (
       <div className="card badge-card">
         <h4>No claim found</h4>
         <p>There is no claim associated with this item yet.</p>
+        {children}
       </div>
     );
   }
@@ -24,6 +27,7 @@ const ClaimBadge = ({ claim, claimedBy }: ClaimBadgeProps) => {
         Workflow Lifecycle Status:
         <span className="status-pill">{claim.status}</span>
       </p>
+      {children}
     </div>
   );
 };

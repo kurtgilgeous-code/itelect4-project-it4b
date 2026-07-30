@@ -1,211 +1,151 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import type React from "react";
+import type { User, LostItem, Claim } from "./types/index";
+import { ClaimStatus } from "./types/index";
 import UserCard from "./components/UserCard";
 import ItemCard from "./components/ItemCard";
 import ClaimBadge from "./components/ClaimBadge";
-import { ClaimStatus, type User, type LostItem, type Claim } from "./types/index";
+import useToggle from "./hooks/useToggle";
+import usePrevious from "./hooks/usePrevious";
 
-const mockUsers: User[] = [
-  {
-    id: 1,
-    name: "Kurt Andre C. Panganiban",
-    email: "kurt@example.com",
-    role: "student",
-    isActive: true,
-  },
-  {
-    id: 2,
-    name: "Toby Olimpo",
-    email: "toby@example.com",
-    role: "student",
-    isActive: true,
-  },
-  {
-    id: 3,
-    name: "Jacov Endaya",
-    email: "jacov@example.com",
-    role: "student",
-    isActive: true,
-  },
-  {
-    id: 4,
-    name: "Raven Belen",
-    email: "raven@example.com",
-    role: "security_admin",
-    isActive: true,
-  },
-  {
-    id: 5,
-    name: "Euclid Yabut",
-    email: "euclid@example.com",
-    role: "student",
-    isActive: true,
-  },
-];
+// Mock Data Source
+const mockUser: User = {
+  id: 1,
+  name: "Juan dela Cruz",
+  email: "juan@example.com",
+  role: "student",
+  isActive: true,
+};
 
-const mockItems: LostItem[] = [
+const initialItems: LostItem[] = [
   {
     id: 101,
     title: "Hydro Flask Bottle",
-    description: "Black 32oz flask left near the podium room 403.",
+    description: "Black 32oz flask left in Room 403.",
     locationFound: "Building A, 4th Floor",
     reportedBy: 1,
-    createdAt: new Date("2026-07-08"),
+    createdAt: new Date(),
   },
   {
     id: 102,
-    title: "Blue Campus Hoodie",
-    description: "Pullover hoodie found beside the library stairs.",
-    locationFound: "Library Entrance",
-    reportedBy: 2,
-    createdAt: new Date("2026-07-09"),
-  },
-  {
-    id: 103,
-    title: "Wireless Earbuds",
-    description: "Black earbuds with a neon green case.",
-    locationFound: "Computer Lab 2",
-    reportedBy: 4,
-    createdAt: new Date("2026-07-11"),
-  },
-  {
-    id: 104,
-    title: "Silver Wristwatch",
-    description: "Analog watch left on the cafeteria counter.",
-    locationFound: "Campus Cafeteria",
-    reportedBy: 5,
-    createdAt: new Date("2026-07-12"),
+    title: "Graphing Calculator",
+    description: "TI-84 Plus left on the library table.",
+    locationFound: "Main Library",
+    reportedBy: 1,
+    createdAt: new Date(),
   },
 ];
 
-const mockClaims: Claim[] = [
-  {
-    id: 501,
-    itemId: 101,
-    claimedBy: 1,
-    status: ClaimStatus.Pending,
-  },
-  {
-    id: 502,
-    itemId: 102,
-    claimedBy: 3,
-    status: ClaimStatus.Approved,
-  },
-  {
-    id: 503,
-    itemId: 103,
-    claimedBy: 2,
-    status: ClaimStatus.Rejected,
-  },
-  {
-    id: 504,
-    itemId: 104,
-    claimedBy: 5,
-    status: ClaimStatus.Pending,
-  },
-];
+const mockClaim: Claim = {
+  id: 501,
+  itemId: 101,
+  claimedBy: 1,
+  status: ClaimStatus.Pending,
+};
 
 function App() {
-  const [selectedUser, setSelectedUser] = useState<User>(mockUsers[0]);
-  const [selectedItem, setSelectedItem] = useState<LostItem>(mockItems[0]);
+  // 1. useState<T> for dynamic state pieces
+  const [items, setItems] = useState<LostItem[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleUserSelect = (user: User) => {
-    if (user.id === selectedUser.id) {
-      const currentIndex = mockUsers.findIndex((u) => u.id === user.id);
-      const nextUser = mockUsers[(currentIndex + 1) % mockUsers.length];
-      setSelectedUser(nextUser);
-      console.log("Switched to next user:", nextUser.name);
-      return;
-    }
+  // 2. Custom hooks
+  const [showAdminPanel, toggleAdminPanel] = useToggle(false);
+  const previousSearch = usePrevious<string>(searchTerm);
 
-    setSelectedUser(user);
-    console.log("Selected user:", user.name);
+  // 3. useRef for DOM element targeting
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // 4. useEffect to load mock data asynchronously on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setItems(initialItems);
+      setIsLoading(false);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Programmatically focus the search input
+  const handleFocusSearch = (): void => {
+    searchInputRef.current?.focus();
   };
 
-  const handleItemSelect = (item: LostItem) => {
-    setSelectedItem(item);
-    console.log("Selected item:", item.title);
+  // 5. Typed event handler for text inputs
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value);
   };
 
-    const getItemClaim = (item: LostItem) => mockClaims.find((claim) => claim.itemId === item.id);
-  const getItemStatusLabel = (item: LostItem) => getItemClaim(item)?.status ?? "Unclaimed";
-  const statusOrder: Record<string, number> = {
-    [ClaimStatus.Pending]: 0,
-    [ClaimStatus.Approved]: 1,
-    [ClaimStatus.Rejected]: 2,
-    Unclaimed: 3,
-  };
+  // Derived filtered items based on typed state
+  const filteredItems = items.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const sortedItems = [...mockItems].sort((a, b) => {
-    const statusA = getItemStatusLabel(a);
-    const statusB = getItemStatusLabel(b);
-    return statusOrder[statusA] - statusOrder[statusB] || a.title.localeCompare(b.title);
-  });
-
-  const selectedClaim = getItemClaim(selectedItem);
-  const foundBy = mockUsers.find((user) => user.id === selectedItem.reportedBy)?.name ?? "Unknown";
-  const claimedBy = selectedClaim
-    ? mockUsers.find((user) => user.id === selectedClaim.claimedBy)?.name ?? "Unknown"
-    : "No claim";
+  if (isLoading) {
+    return (
+      <div style={{ padding: "24px", fontFamily: "sans-serif" }}>
+        <p>🔄 Loading Campus Tracker items...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="app-shell">
-      <header className="hero">
-        <h1>Campus Lost & Found</h1>
-        <p className="subtitle">8-bit dashboard for item recovery and claim tracking</p>
-      </header>
+    <div style={{ padding: "24px", fontFamily: "sans-serif", maxWidth: "600px" }}>
+      <h1>Campus Lost & Found Tracker</h1>
+      <hr />
 
-      <section className="section-grid">
-        <div className="section-card">
-          <h2>Available Users</h2>
-          <div className="user-list">
-            {mockUsers.map((user) => (
-              <button
-                key={user.id}
-                className={`pill ${selectedUser.id === user.id ? "active" : ""}`}
-                onClick={() => handleUserSelect(user)}
-              >
-                {user.name}
-              </button>
-            ))}
+      {/* Controls & Search Section */}
+      <div style={{ marginBottom: "16px" }}>
+        <input
+          ref={searchInputRef}
+          type="text"
+          value={searchTerm}
+          placeholder="Search items by title..."
+          onChange={handleSearchChange}
+          style={{ padding: "8px", width: "70%", marginRight: "8px" }}
+        />
+        <button onClick={handleFocusSearch}>Focus Search</button>
+      </div>
+
+      {previousSearch !== undefined && previousSearch !== searchTerm && (
+        <p style={{ fontSize: "0.85rem", color: "#666" }}>
+          Last search term: <em>"{previousSearch}"</em>
+        </p>
+      )}
+
+      {/* Custom Hook Toggle Section */}
+      <div style={{ margin: "16px 0" }}>
+        <button onClick={toggleAdminPanel}>
+          {showAdminPanel ? "Hide Admin Controls" : "Show Admin Controls"}
+        </button>
+        {showAdminPanel && (
+          <div style={{ marginTop: "8px", padding: "8px", background: "#f0f0f0" }}>
+            <p><strong>Admin Panel Active:</strong> System status is healthy.</p>
           </div>
-        </div>
+        )}
+      </div>
 
-        <div className="section-card">
-          <h2>Available Items</h2>
-          <div className="item-list">
-            {sortedItems.map((item) => {
-              const statusLabel = getItemStatusLabel(item);
-              return (
-                <button
-                  key={item.id}
-                  className={`pill ${selectedItem.id === item.id ? "active" : ""}`}
-                  onClick={() => handleItemSelect(item)}
-                >
-                  {item.title}
-                  <span className={`status-pill ${statusLabel.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {statusLabel}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      {/* Render Dynamic State */}
+      <h2>User Profile</h2>
+      <UserCard user={mockUser} onSelect={setSelectedUser} />
+      {selectedUser && (
+        <p style={{ color: "green" }}>
+          Active Selection: <strong>{selectedUser.name}</strong> ({selectedUser.email})
+        </p>
+      )}
 
-        <div className="section-card">
-          <h2>User Account</h2>
-          <UserCard user={selectedUser} onSelect={handleUserSelect} />
-        </div>
+      <h2>Discovered Items ({filteredItems.length})</h2>
+      {filteredItems.length === 0 ? (
+        <p>No matching items found.</p>
+      ) : (
+        filteredItems.map((item) => <ItemCard key={item.id} item={item} />)
+      )}
 
-        <div className="section-card">
-          <h2>Discovered Item</h2>
-          <ItemCard item={selectedItem} foundBy={foundBy} statusLabel={selectedClaim?.status ?? "Unclaimed"} />
-        </div>
-
-        <div className="section-card full-width">
-          <h2>Claim Summary</h2>
-          <ClaimBadge claim={selectedClaim} claimedBy={claimedBy} />
-        </div>
-      </section>
+      <h2>Active Claim Workflow</h2>
+      <ClaimBadge claim={mockClaim} claimedBy={mockUser.name}>
+        <p>⚠️ Pending approval from security personnel.</p>
+      </ClaimBadge>
     </div>
   );
 }
