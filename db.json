@@ -1,0 +1,92 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "Silver Laptop",
+      "description": "15-inch MacBook Pro with space gray finish",
+      "location": "Library Study Room B",
+      "status": "found",
+      "dateReported": "2026-08-15T10:30:00Z",
+      "categoryId": "1"
+    },
+    {
+      "id": "2",
+      "title": "Blue Backpack",
+      "description": "Navy blue Herschel backpack with laptop compartment",
+      "location": "Student Center Cafeteria",
+      "status": "found",
+      "dateReported": "2026-08-16T14:15:00Z",
+      "categoryId": "2"
+    },
+    {
+      "id": "3",
+      "title": "AirPods Pro",
+      "description": "White AirPods Pro in charging case",
+      "location": "Gym Locker Room",
+      "status": "claimed",
+      "dateReported": "2026-08-14T09:00:00Z",
+      "categoryId": "3"
+    },
+    {
+      "id": "4",
+      "title": "Gold Watch",
+      "description": "Rolex Submariner with gold band",
+      "location": "Dormitory Front Desk",
+      "status": "found",
+      "dateReported": "2026-08-17T11:20:00Z",
+      "categoryId": "4"
+    },
+    {
+      "id": "5",
+      "title": "Red Umbrella",
+      "description": "Classic red umbrella with wooden handle",
+      "location": "Main Entrance Lobby",
+      "status": "lost",
+      "dateReported": "2026-08-18T08:45:00Z",
+      "categoryId": "2"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Electronics",
+      "icon": "📱"
+    },
+    {
+      "id": "2",
+      "name": "Bags & Luggage",
+      "icon": "🎒"
+    },
+    {
+      "id": "3",
+      "name": "Accessories",
+      "icon": "⌚"
+    },
+    {
+      "id": "4",
+      "name": "Jewelry",
+      "icon": "💍"
+    },
+    {
+      "id": "5",
+      "name": "Other",
+      "icon": "📦"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "itemId": "3",
+      "claimantName": "Sarah Johnson",
+      "claimDate": "2026-08-15T16:30:00Z",
+      "status": "approved"
+    },
+    {
+      "id": "c2",
+      "itemId": "1",
+      "claimantName": "Michael Chen",
+      "claimDate": "2026-08-17T13:00:00Z",
+      "status": "pending"
+    }
+  ]
+}

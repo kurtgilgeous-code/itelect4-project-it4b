@@ -17,6 +17,7 @@ export default function Layout() {
           <div className="flex items-center gap-4">
             <NavLink to="/" end className={({ isActive }) => (isActive ? "font-semibold" : "")}>Campus Tracker</NavLink>
             <NavLink to="/items" className={({ isActive }) => (isActive ? "font-semibold" : "")}>Items</NavLink>
+            <NavLink to="/report" className={({ isActive }) => (isActive ? "font-semibold" : "")}>Report</NavLink>
             <NavLink to="/admin" className={({ isActive }) => (isActive ? "font-semibold" : "")}>Admin</NavLink>
           </div>
 

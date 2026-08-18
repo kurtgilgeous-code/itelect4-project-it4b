@@ -1,63 +1,73 @@
 // ==========================================
-// CORE ENTITIES (Campus Lost & Found)
+// CORE ENTITIES (Campus Lost & Found Tracker)
 // ==========================================
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: "student" | "security_admin"; // Role/type field with 2-3 values
-  isActive: boolean;
-}
-
-export interface LostItem {
-  id: number;
+export interface Item {
+  id: string;
   title: string;
   description: string;
-  locationFound: string;
-  reportedBy: number; // User ID
-  createdAt: Date;
+  location: string;
+  status: 'lost' | 'found' | 'claimed';
+  dateReported: string;
+  categoryId: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 export interface Claim {
-  id: number;
-  itemId: number;
-  claimedBy: number; // User ID
-  status: ClaimStatus; // Multi-step status lifecycle
-  verifiedAt?: Date;
+  id: string;
+  itemId: string;
+  claimantName: string;
+  claimDate: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'student' | 'admin';
+  isActive: boolean;
 }
 
 // ==========================================
-// CONSTANTS + LITERAL TYPES (At least 1 required)
+// CREATION/MUTATION TYPES (using Omit for auto-generated fields)
 // ==========================================
 
-export const ClaimStatus = {
-  Pending: "Pending",
-  Approved: "Approved",
-  Rejected: "Rejected",
-} as const;
-
-export type ClaimStatus = (typeof ClaimStatus)[keyof typeof ClaimStatus];
+export type ItemCreateInput = Omit<Item, 'id'>;
+export type ItemUpdateInput = Partial<ItemCreateInput>;
+export type ClaimCreateInput = Omit<Claim, 'id'>;
+export type ClaimUpdateInput = Partial<ClaimCreateInput>;
 
 // ==========================================
-// GENERIC INTERFACES (At least 1 required)
+// API RESPONSE TYPES
 // ==========================================
 
 export interface ApiResponse<T> {
-  success: boolean;
   data: T;
-  message?: string;
+  status: number;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
 // ==========================================
-// UTILITY TYPES (At least 2 required)
+// UTILITY TYPES
 // ==========================================
 
 // 1. Partial: Ideal for updating item descriptions or statuses
-export type ItemUpdate = Partial<LostItem>;
+export type ItemUpdate = Partial<Item>;
 
 // 2. Omit: Public profile removing sensitive or internal fields
-export type PublicUser = Omit<User, "email" | "isActive">;
+export type PublicUser = Omit<User, 'email' | 'isActive'>;
 
 // 3. Record: Dashboard analytics for system claims
-export type ClaimSummaryCount = Record<"pending" | "approved" | "rejected", number>;
+export type ClaimSummaryCount = Record<'pending' | 'approved' | 'rejected', number>;
