@@ -44,6 +44,24 @@
       "status": "lost",
       "dateReported": "2026-08-18T08:45:00Z",
       "categoryId": "2"
+    },
+    {
+      "title": "Airpods ",
+      "description": "Blue uknown brand",
+      "location": "Sentru,",
+      "status": "found",
+      "dateReported": "2026-08-20T01:47:42.262Z",
+      "categoryId": "3",
+      "id": "koAl_B9"
+    },
+    {
+      "title": "ddd",
+      "description": "dd",
+      "location": "gate",
+      "status": "found",
+      "dateReported": "2026-08-22T00:24:32.053Z",
+      "categoryId": "1",
+      "id": "xyV3w-z"
     }
   ],
   "categories": [
@@ -87,6 +105,41 @@
       "claimantName": "Michael Chen",
       "claimDate": "2026-08-17T13:00:00Z",
       "status": "pending"
+    },
+    {
+      "itemId": "5",
+      "claimantName": "dddd",
+      "claimDate": "2026-08-22T00:22:47.249Z",
+      "status": "pending",
+      "id": "ag5w5ce"
+    },
+    {
+      "itemId": "5",
+      "claimantName": "1",
+      "claimDate": "2026-08-22T00:23:57.566Z",
+      "status": "pending",
+      "id": "hf_6IlV"
+    },
+    {
+      "itemId": "xyV3w-z",
+      "claimantName": "kurt",
+      "claimDate": "2026-08-22T00:24:55.515Z",
+      "status": "pending",
+      "id": "oojXsBK"
+    },
+    {
+      "itemId": "xyV3w-z",
+      "claimantName": "ss",
+      "claimDate": "2026-08-22T00:25:52.399Z",
+      "status": "pending",
+      "id": "kHk8NPB"
+    },
+    {
+      "itemId": "xyV3w-z",
+      "claimantName": "kurt gilgeous",
+      "claimDate": "2026-08-22T00:27:27.567Z",
+      "status": "pending",
+      "id": "A3O932Y"
     }
   ]
 }
