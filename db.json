@@ -41,7 +41,7 @@
       "title": "Red Umbrella",
       "description": "Classic red umbrella with wooden handle",
       "location": "Main Entrance Lobby",
-      "status": "lost",
+      "status": "claimed",
       "dateReported": "2026-08-18T08:45:00Z",
       "categoryId": "2"
     },
@@ -58,7 +58,7 @@
       "title": "ddd",
       "description": "dd",
       "location": "gate",
-      "status": "found",
+      "status": "claimed",
       "dateReported": "2026-08-22T00:24:32.053Z",
       "categoryId": "1",
       "id": "xyV3w-z"
@@ -117,28 +117,28 @@
       "itemId": "5",
       "claimantName": "1",
       "claimDate": "2026-08-22T00:23:57.566Z",
-      "status": "pending",
+      "status": "approved",
       "id": "hf_6IlV"
     },
     {
       "itemId": "xyV3w-z",
       "claimantName": "kurt",
       "claimDate": "2026-08-22T00:24:55.515Z",
-      "status": "pending",
+      "status": "approved",
       "id": "oojXsBK"
     },
     {
       "itemId": "xyV3w-z",
       "claimantName": "ss",
       "claimDate": "2026-08-22T00:25:52.399Z",
-      "status": "pending",
+      "status": "rejected",
       "id": "kHk8NPB"
     },
     {
       "itemId": "xyV3w-z",
       "claimantName": "kurt gilgeous",
       "claimDate": "2026-08-22T00:27:27.567Z",
-      "status": "pending",
+      "status": "rejected",
       "id": "A3O932Y"
     }
   ]
