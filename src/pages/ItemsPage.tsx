@@ -2,6 +2,8 @@ import { Link } from 'react-router';
 import { useItems } from '../hooks/useItemsQuery';
 import { useCategories } from '../hooks/useCategoriesQuery';
 import useUIStore from '../store/uiStore';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { Item } from '../types';
 
 export default function ItemsPage() {
@@ -63,11 +65,10 @@ export default function ItemsPage() {
           </p>
         </div>
 
-        <Link
-          to="/report"
-          className="inline-flex items-center justify-center rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-        >
-          + Report Item
+        <Link to="/report">
+          <Button>
+            + Report Item
+          </Button>
         </Link>
       </div>
 
@@ -100,13 +101,14 @@ export default function ItemsPage() {
           ))}
         </div>
 
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by title, desc, location..."
-          className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 sm:w-64"
-        />
+        <div className="w-full sm:w-72">
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by title, desc, location..."
+          />
+        </div>
       </div>
 
       {/* Items Grid */}
