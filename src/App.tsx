@@ -12,12 +12,15 @@ import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   return (
     <Routes>
+      {/* Dedicated Login Screen without item navigation tabs */}
+      <Route path="login" element={<LoginPage />} />
+
+      {/* Main Application with Navigation Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<DashboardPage />} />
         <Route path="items" element={<ItemsPage />} />
         <Route path="items/:id" element={<ItemDetailPage />} />
         <Route path="report" element={<ReportItemPage />} />
-        <Route path="login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="admin" element={<ProtectedPage />} />
