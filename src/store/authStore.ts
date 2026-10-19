@@ -1,45 +1,30 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { User } from '../types';
 
 export interface AuthState {
   token: string | null;
-  userName: string | null;
-  login: (name: string) => void;
+  user: User | null;
+  setSession: (token: string, user: User) => void;
   logout: () => void;
 }
 
-/**
- * Zustand Auth Store with Persist Middleware
- * Uses partialize to save ONLY data fields (token, userName) to localStorage,
- * excluding action functions (login, logout) to keep localStorage clean.
- */
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
-      userName: null,
-
-      login: (name: string) =>
-        set(() => ({
-          token: `token-${Date.now()}`,
-          userName: name,
-        })),
-
-      logout: () =>
-        set(() => ({
-          token: null,
-          userName: null,
-        })),
+      user: null,
+      setSession: (token, user) => set({ token, user }),
+      logout: () => set({ token: null, user: null }),
     }),
     {
-      name: 'auth-storage', // localStorage key
-      // Partialize: only persist state data fields, omit actions
+      name: 'auth-storage-v2',
       partialize: (state) => ({
         token: state.token,
-        userName: state.userName,
+        user: state.user,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export default useAuthStore;

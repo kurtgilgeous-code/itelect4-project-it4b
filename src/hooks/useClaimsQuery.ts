@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchClaims, fetchClaimsByItemId, createClaim, updateClaimStatus } from '../api/client';
+import { ITEMS_QUERY_KEY } from './useItemsQuery';
+import useAuthStore from '../store/authStore';
 import type { Claim, ClaimCreateInput } from '../types';
 
 export const CLAIMS_QUERY_KEY = ['claims'] as const;
@@ -9,9 +11,11 @@ export const CLAIMS_BY_ITEM_QUERY_KEY = (itemId: string) => ['claims', itemId] a
  * Hook: Fetch all claims (useQuery)
  */
 export const useClaims = () => {
+  const userId = useAuthStore((state) => state.user?.id ?? 'guest');
   return useQuery<Claim[], Error>({
-    queryKey: CLAIMS_QUERY_KEY,
+    queryKey: [...CLAIMS_QUERY_KEY, userId],
     queryFn: fetchClaims,
+    enabled: userId !== 'guest',
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
   });
@@ -21,10 +25,11 @@ export const useClaims = () => {
  * Hook: Fetch claims for a specific item (useQuery)
  */
 export const useClaimsByItemId = (itemId: string | undefined) => {
+  const userId = useAuthStore((state) => state.user?.id ?? 'guest');
   return useQuery<Claim[], Error>({
-    queryKey: CLAIMS_BY_ITEM_QUERY_KEY(itemId || ''),
+    queryKey: [...CLAIMS_BY_ITEM_QUERY_KEY(itemId || ''), userId],
     queryFn: () => fetchClaimsByItemId(itemId!),
-    enabled: Boolean(itemId),
+    enabled: Boolean(itemId && userId !== 'guest'),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
@@ -58,6 +63,7 @@ export const useUpdateClaimStatus = () => {
     mutationFn: ({ id, status }) => updateClaimStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CLAIMS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY });
     },
   });
 };

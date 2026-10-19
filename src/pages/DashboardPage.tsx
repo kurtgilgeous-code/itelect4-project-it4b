@@ -6,11 +6,11 @@ import useUIStore from '../store/uiStore';
 import type { Item } from '../types';
 
 export default function DashboardPage() {
-  const { userName } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
   const { setSelectedCategoryId } = useUIStore();
 
-  const { data: items = [], isLoading: itemsLoading } = useItems();
-  const { data: categories = [] } = useCategories();
+  const { data: items = [], isLoading: itemsLoading, error: itemsError } = useItems();
+  const { data: categories = [], error: categoriesError } = useCategories();
 
   const lostCount = items.filter((i) => i.status === 'lost').length;
   const foundCount = items.filter((i) => i.status === 'found').length;
@@ -28,7 +28,7 @@ export default function DashboardPage() {
               Campus Lost & Found Hub
             </h1>
             <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
-              {userName ? `Welcome back, ${userName}!` : 'Track, find, and reclaim lost student belongings.'}
+              {user ? `Welcome back, ${user.name}!` : 'Track, find, and reclaim lost student belongings.'}
             </p>
           </div>
           <Link
@@ -61,6 +61,13 @@ export default function DashboardPage() {
           </div>
         </div>
       </header>
+
+      {(itemsError || categoriesError) && (
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-300">
+          {itemsError && <p>Failed to load items: {itemsError.message}</p>}
+          {categoriesError && <p>Failed to load categories: {categoriesError.message}</p>}
+        </div>
+      )}
 
       {/* Explore Categories */}
       <section className="space-y-4">

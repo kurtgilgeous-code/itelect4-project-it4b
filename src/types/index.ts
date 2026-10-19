@@ -10,6 +10,8 @@ export interface Item {
   status: 'lost' | 'found' | 'claimed';
   dateReported: string;
   categoryId: string;
+  quantity?: number;
+  isOwner?: boolean;
 }
 
 export interface Category {
@@ -30,7 +32,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'student' | 'admin';
+  role: 'student' | 'admin' | 'instructor';
   isActive: boolean;
 }
 
@@ -40,8 +42,13 @@ export interface User {
 
 export type ItemCreateInput = Omit<Item, 'id'>;
 export type ItemUpdateInput = Partial<ItemCreateInput>;
-export type ClaimCreateInput = Omit<Claim, 'id'>;
+export type ClaimCreateInput = Pick<Claim, 'itemId'>;
 export type ClaimUpdateInput = Partial<ClaimCreateInput>;
+
+export interface LoginReply {
+  token: string;
+  user: User;
+}
 
 // ==========================================
 // API RESPONSE TYPES

@@ -4,7 +4,7 @@ import useAuthStore from "../store/authStore";
 
 export default function Layout() {
   const [isDark, setIsDark] = useState(false);
-  const { token, userName, logout } = useAuthStore();
+  const { token, user, logout } = useAuthStore();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -46,16 +46,18 @@ export default function Layout() {
             >
               Report
             </NavLink>
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                isActive
-                  ? "font-semibold text-cyan-600 dark:text-cyan-400"
-                  : "text-slate-700 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400"
-              }
-            >
-              Admin
-            </NavLink>
+            {user?.role === "admin" && (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive
+                    ? "font-semibold text-cyan-600 dark:text-cyan-400"
+                    : "text-slate-700 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400"
+                }
+              >
+                Admin
+              </NavLink>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -69,7 +71,7 @@ export default function Layout() {
 
             {token ? (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{userName}</span>
+                <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.name}</span>
                 <button
                   onClick={logout}
                   className="cursor-pointer rounded-xl border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"

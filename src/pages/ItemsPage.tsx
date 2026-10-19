@@ -47,7 +47,7 @@ export default function ItemsPage() {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-300">
         <p className="font-semibold">Failed to fetch items</p>
-        <p className="mt-1 text-sm">{itemsError.message}. Make sure json-server is running on port 3001.</p>
+        <p className="mt-1 text-sm">{itemsError.message}. Check that the backend API is available.</p>
       </div>
     );
   }

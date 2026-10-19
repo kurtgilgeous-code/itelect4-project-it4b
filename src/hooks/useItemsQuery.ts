@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchItems, fetchItemById, createItem, updateItem, deleteItem } from '../api/client';
+import useAuthStore from '../store/authStore';
 import type { Item, ItemCreateInput, ItemUpdateInput } from '../types';
 
 export const ITEMS_QUERY_KEY = ['items'] as const;
@@ -9,8 +10,9 @@ export const ITEM_DETAIL_QUERY_KEY = (id: string) => ['items', id] as const;
  * Hook: Fetch all items (useQuery)
  */
 export const useItems = () => {
+  const userId = useAuthStore((state) => state.user?.id ?? 'guest');
   return useQuery<Item[], Error>({
-    queryKey: ITEMS_QUERY_KEY,
+    queryKey: [...ITEMS_QUERY_KEY, userId],
     queryFn: fetchItems,
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
@@ -21,8 +23,9 @@ export const useItems = () => {
  * Hook: Fetch single item by ID (useQuery)
  */
 export const useItemById = (id: string | undefined) => {
+  const userId = useAuthStore((state) => state.user?.id ?? 'guest');
   return useQuery<Item, Error>({
-    queryKey: ITEM_DETAIL_QUERY_KEY(id || ''),
+    queryKey: [...ITEM_DETAIL_QUERY_KEY(id || ''), userId],
     queryFn: () => fetchItemById(id!),
     enabled: Boolean(id),
     staleTime: 1000 * 60 * 5,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useItemById, useUpdateItem } from '../hooks/useItemsQuery';
+import { useItemById } from '../hooks/useItemsQuery';
 import { useClaimsByItemId, useCreateClaim, useUpdateClaimStatus } from '../hooks/useClaimsQuery';
 import { useCategories } from '../hooks/useCategoriesQuery';
 import useAuthStore from '../store/authStore';
@@ -9,9 +9,8 @@ import type { Category, Claim } from '../types';
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { token, userName } = useAuthStore();
+  const { token, user } = useAuthStore();
   const [showClaimForm, setShowClaimForm] = useState(false);
-  const [claimantName, setClaimantName] = useState('');
 
   // 1. Fetch single item by URL id parameter using TanStack Query
   const { data: item, isLoading: itemLoading, error: itemError } = useItemById(id);
@@ -25,7 +24,6 @@ export default function ItemDetailPage() {
   // 4. Mutations
   const createClaimMutation = useCreateClaim();
   const updateClaimMutation = useUpdateClaimStatus();
-  const updateItemMutation = useUpdateItem();
 
   if (itemLoading) {
     return (
@@ -60,40 +58,23 @@ export default function ItemDetailPage() {
   // Submit new claim
   const handleSubmitClaim = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!claimantName.trim() || !item) return;
+    if (!item) return;
 
     createClaimMutation.mutate(
-      {
-        itemId: item.id,
-        claimantName: claimantName.trim(),
-        claimDate: new Date().toISOString(),
-        status: 'pending',
-      },
+      { itemId: item.id },
       {
         onSuccess: () => {
-          setClaimantName('');
           setShowClaimForm(false);
         },
       }
     );
   };
 
-  // Staff action: Approve Claim
+  const canReviewClaims = Boolean(user && (user.role === 'admin' || item.isOwner));
+
+  // Item owners and administrators can review claims.
   const handleApproveClaim = (claimId: string) => {
-    updateClaimMutation.mutate(
-      { id: claimId, status: 'approved' },
-      {
-        onSuccess: () => {
-          // When claim is approved, automatically update the physical item status to 'claimed'
-          if (item) {
-            updateItemMutation.mutate({
-              id: item.id,
-              data: { status: 'claimed' },
-            });
-          }
-        },
-      }
-    );
+    updateClaimMutation.mutate({ id: claimId, status: 'approved' });
   };
 
   // Staff action: Reject Claim
@@ -166,17 +147,26 @@ export default function ItemDetailPage() {
 
         {/* Claim Action Button */}
         <div className="mt-8 flex flex-wrap gap-3">
-          {item.status !== 'claimed' ? (
-            <button
-              onClick={() => setShowClaimForm((prev) => !prev)}
-              className="rounded-xl bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-            >
-              {showClaimForm ? 'Close Claim Form' : 'Claim This Item'}
-            </button>
-          ) : (
+          {item.status === 'claimed' ? (
             <div className="inline-flex items-center gap-2 rounded-xl bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
               ✓ This item has already been successfully claimed and returned.
             </div>
+          ) : token ? (
+            user && !item.isOwner ? (
+              <button
+                onClick={() => setShowClaimForm((prev) => !prev)}
+                className="rounded-xl bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+              >
+                {showClaimForm ? 'Close Claim Form' : 'Claim This Item'}
+              </button>
+            ) : null
+          ) : (
+            <button
+              onClick={() => navigate('/login')}
+              className="rounded-xl bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500"
+            >
+              Sign in to claim this item
+            </button>
           )}
         </div>
       </div>
@@ -189,19 +179,15 @@ export default function ItemDetailPage() {
         >
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Submit Ownership Claim</h3>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Enter your name to file a claim. Campus staff will review and verify ownership.
+            Your account name will be included. The item owner or an administrator can review your claim.
           </p>
 
           <div className="mt-4 space-y-3">
-            <input
-              type="text"
-              placeholder="Your Full Name (e.g., Maria Santos)"
-              value={claimantName}
-              onChange={(e) => setClaimantName(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-              required
-            />
-
+            {createClaimMutation.isError && (
+              <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                {createClaimMutation.error.message}
+              </p>
+            )}
             <div className="flex gap-2">
               <button
                 type="submit"
@@ -227,18 +213,20 @@ export default function ItemDetailPage() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              Claims for this Item ({claims.length})
+                {canReviewClaims ? `Claims for this Item (${claims.length})` : 'Item Claims'}
             </h3>
             <p className="mt-1 text-sm text-slate-500">
-              {token
-                ? `Logged in as ${userName || 'Staff'}. You can review and approve pending claims.`
-                : 'Student claims awaiting campus staff verification.'}
-            </p>
+                {canReviewClaims
+                  ? `Logged in as ${user?.name}. You can review pending claims.`
+                  : token
+                    ? 'Only the item owner or an administrator can view submitted claims.'
+                    : 'Sign in as the item owner to review submitted claims.'}
+              </p>
           </div>
         </div>
 
         <div className="mt-4 space-y-3">
-          {claims.length > 0 ? (
+          {canReviewClaims && claims.length > 0 ? (
             claims.map((claim: Claim) => (
               <div
                 key={claim.id}
@@ -265,7 +253,7 @@ export default function ItemDetailPage() {
                   </span>
 
                   {/* Staff Action Buttons for Pending Claims */}
-                  {claim.status === 'pending' && (
+                  {canReviewClaims && claim.status === 'pending' && (
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => handleApproveClaim(claim.id)}
@@ -288,9 +276,9 @@ export default function ItemDetailPage() {
                 </div>
               </div>
             ))
-          ) : (
+          ) : canReviewClaims ? (
             <p className="text-sm text-slate-500 italic">No claims filed yet for this item.</p>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
