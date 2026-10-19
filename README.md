@@ -8,6 +8,8 @@ The frontend uses `itelect4-backend` for authentication, categories, items, and 
 
 For Vercel, set `VITE_API_URL` to the deployed backend origin in the frontend project's environment variables. Set the backend's `CORS_ORIGIN` to the frontend's exact deployed origin and redeploy the backend. Do not put backend secrets in frontend variables. Register an account at `/register`; newly registered accounts can submit items and claims. Set a trusted staff account's `role` to `admin` in MongoDB to enable the admin claims queue.
 
+The root `vercel.json` rewrites client-side routes to the SPA entry point so links such as `/login` work when opened or refreshed directly.
+
 **Quick Start**
 
 - Install dependencies:
