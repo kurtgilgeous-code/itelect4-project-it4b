@@ -12,8 +12,12 @@ import type {
 } from '../types';
 import useAuthStore from '../store/authStore';
 
-// API Base Configuration
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '');
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+if (!configuredApiUrl) {
+  throw new Error('VITE_API_URL must be configured for the frontend.');
+}
+
+const API_BASE_URL = configuredApiUrl.replace(/\/+$/, '');
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: `${API_BASE_URL}/api`,
