@@ -7,25 +7,61 @@ import type {
   ItemCreateInput,
   ItemUpdateInput,
   ClaimCreateInput,
+  LoginReply,
+  User,
 } from '../types';
+import useAuthStore from '../store/authStore';
 
 // API Base Configuration
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '');
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      if (error.response?.status === 401 && useAuthStore.getState().token) {
+        useAuthStore.getState().logout();
+      }
+      return Promise.reject(new Error(error.response?.data?.message || error.message));
+    }
+    return Promise.reject(error);
+  },
+);
+
+export const login = async (credentials: { email: string; password: string }): Promise<LoginReply> => {
+  const response = await axiosInstance.post<LoginReply>('/auth/login', credentials);
+  return response.data;
+};
+
+export const register = async (details: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<{ user: User }> => {
+  const response = await axiosInstance.post<{ user: User }>('/auth/register', details);
+  return response.data;
+};
+
 // ==========================================
 // ITEMS API
 // ==========================================
 
 /**
- * Fetch all items from json-server
+ * Fetch all publicly visible items
  */
 export const fetchItems = async (): Promise<Item[]> => {
   const response = await axiosInstance.get<Item[]>('/items');

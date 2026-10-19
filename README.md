@@ -2,6 +2,12 @@
 
 A lightweight demo app for tracking found items and claim workflows with a playful 8‑bit UI.
 
+## Backend and deployment
+
+The frontend uses `itelect4-backend` for authentication, categories, items, and claims. It defaults to `http://localhost:4000`; to override it, copy `.env.example` to `.env` and set `VITE_API_URL` to the backend origin (without `/api` or a trailing slash).
+
+For Vercel, set `VITE_API_URL` to the deployed backend origin in the frontend project's environment variables. Set the backend's `CORS_ORIGIN` to the frontend's exact deployed origin and redeploy the backend. Do not put backend secrets in frontend variables. Register an account at `/register`; newly registered accounts can submit items and claims. Set a trusted staff account's `role` to `admin` in MongoDB to enable the admin claims queue.
+
 **Quick Start**
 
 - Install dependencies:

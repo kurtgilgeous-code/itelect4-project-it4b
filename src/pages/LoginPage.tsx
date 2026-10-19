@@ -1,15 +1,26 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../api/client";
 import useAuthStore from "../store/authStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isDark, setIsDark] = useState(false);
-  const { token, login } = useAuthStore();
+  const token = useAuthStore((state) => state.token);
+  const setSession = useAuthStore((state) => state.setSession);
   const navigate = useNavigate();
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: ({ token: sessionToken, user }) => {
+      setSession(sessionToken, user);
+      navigate("/", { replace: true });
+    },
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -21,11 +32,9 @@ export default function LoginPage() {
     }
   }, [token, navigate]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    login(name.trim());
-    navigate("/", { replace: true });
+    loginMutation.mutate({ email: email.trim(), password });
   };
 
   return (
@@ -51,7 +60,7 @@ export default function LoginPage() {
             Campus Lost & Found
           </h1>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            Sign in with your name or Student ID to report items, file claims, or access staff tools.
+            Sign in to report items, file claims, or access staff tools.
           </p>
         </div>
 
@@ -59,25 +68,27 @@ export default function LoginPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8">
           <form onSubmit={submit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground">
-                Student Name or ID
-              </Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Juan dela Cruz"
-                required
-                autoFocus
-              />
+              <Label htmlFor="email" className="text-foreground">Email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required autoFocus />
             </div>
-
-            <Button type="submit" className="w-full">
-              Sign In to Tracker
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-foreground">Password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+            </div>
+            {loginMutation.isError && (
+              <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                {loginMutation.error.message}
+              </p>
+            )}
+            <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
           <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+            <p>
+              New here? <Link to="/register" className="font-semibold text-cyan-600 hover:underline dark:text-cyan-400">Create an account</Link>
+            </p>
             <Link to="/" className="font-semibold text-cyan-600 hover:underline dark:text-cyan-400">
               ← Continue as Guest to Browse Items
             </Link>

@@ -1,34 +1,22 @@
 import { useClaims, useUpdateClaimStatus } from '../hooks/useClaimsQuery';
-import { useItems, useUpdateItem } from '../hooks/useItemsQuery';
+import { useItems } from '../hooks/useItemsQuery';
 import useAuthStore from '../store/authStore';
 import { Link } from 'react-router';
 import type { Claim, Item } from '../types';
 
 export default function ProtectedPage() {
-  const { userName } = useAuthStore();
-  const { data: claims = [], isLoading: claimsLoading } = useClaims();
+  const user = useAuthStore((state) => state.user);
+  const { data: claims = [], isLoading: claimsLoading, error: claimsError } = useClaims();
   const { data: items = [] } = useItems();
 
   const updateClaimMutation = useUpdateClaimStatus();
-  const updateItemMutation = useUpdateItem();
 
   const getItemTitle = (itemId: string) => {
     return items.find((i: Item) => i.id === itemId)?.title || `Item #${itemId}`;
   };
 
   const handleApprove = (claim: Claim) => {
-    updateClaimMutation.mutate(
-      { id: claim.id, status: 'approved' },
-      {
-        onSuccess: () => {
-          // Also mark the associated item as claimed
-          updateItemMutation.mutate({
-            id: claim.itemId,
-            data: { status: 'claimed' },
-          });
-        },
-      }
-    );
+    updateClaimMutation.mutate({ id: claim.id, status: 'approved' });
   };
 
   const handleReject = (claimId: string) => {
@@ -46,7 +34,7 @@ export default function ProtectedPage() {
           Campus Staff Admin Portal
         </h1>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-          Welcome, <span className="font-semibold text-cyan-600">{userName || 'Staff Member'}</span>. Review and verify student ownership claims here.
+          Welcome, <span className="font-semibold text-cyan-600">{user?.name || 'Staff Member'}</span>. Review and verify student ownership claims here.
         </p>
       </div>
 
@@ -63,7 +51,9 @@ export default function ProtectedPage() {
           </div>
         </div>
 
-        {claimsLoading ? (
+        {claimsError ? (
+          <p role="alert" className="mt-4 text-sm text-red-600">Failed to load claims: {claimsError.message}</p>
+        ) : claimsLoading ? (
           <div className="p-8 text-center text-slate-500">Loading claims queue...</div>
         ) : pendingClaims.length > 0 ? (
           <div className="mt-5 space-y-3">
