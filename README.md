@@ -26,7 +26,7 @@ The root `vercel.json` rewrites client-side routes to the SPA entry point so lin
 
 - Status-aware item sorting (Pending → Approved → Rejected → Unclaimed)
 - Selectable users and items; `Switch Profile` cycles to the next user
-- Simple mock data in `src/App.tsx` for demo and testing
+- Live item and category data from the Lost & Found API
 
 **Important Files**
 
