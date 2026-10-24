@@ -50,6 +50,13 @@ export interface LoginReply {
   user: User;
 }
 
+export interface AiReview {
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  readiness: 'ready' | 'almost' | 'not-yet';
+}
+
 // ==========================================
 // API RESPONSE TYPES
 // ==========================================

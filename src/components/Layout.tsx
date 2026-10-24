@@ -46,6 +46,16 @@ export default function Layout() {
             >
               Report
             </NavLink>
+            <NavLink
+              to="/review"
+              className={({ isActive }) =>
+                isActive
+                  ? "font-semibold text-cyan-600 dark:text-cyan-400"
+                  : "text-slate-700 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400"
+              }
+            >
+              AI Review
+            </NavLink>
             {user?.role === "admin" && (
               <NavLink
                 to="/admin"

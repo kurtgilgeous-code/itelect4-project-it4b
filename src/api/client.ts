@@ -9,6 +9,7 @@ import type {
   ClaimCreateInput,
   LoginReply,
   User,
+  AiReview,
 } from '../types';
 import useAuthStore from '../store/authStore';
 
@@ -163,6 +164,15 @@ export const updateClaimStatus = async (
   status: 'pending' | 'approved' | 'rejected'
 ): Promise<Claim> => {
   const response = await axiosInstance.patch<Claim>(`/claims/${id}`, { status });
+  return response.data;
+};
+
+export const askAi = async (prompt: string): Promise<AiReview> => {
+  const response = await axiosInstance.post<AiReview>(
+    '/ai',
+    { prompt },
+    { timeout: 60_000 }
+  );
   return response.data;
 };
 

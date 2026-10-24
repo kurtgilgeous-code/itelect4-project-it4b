@@ -5,6 +5,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ItemsPage from "./pages/ItemsPage";
 import ItemDetailPage from "./pages/ItemDetailPage";
 import ReportItemPage from "./pages/ReportItemPage";
+import ReviewPage from "./pages/ReviewPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedPage from "./pages/ProtectedPage";
@@ -24,6 +25,7 @@ function App() {
         <Route path="items/:id" element={<ItemDetailPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="report" element={<ReportItemPage />} />
+          <Route path="review" element={<ReviewPage />} />
         </Route>
 
         <Route element={<ProtectedRoute adminOnly />}>
