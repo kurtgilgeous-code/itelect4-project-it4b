@@ -21,10 +21,11 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Hero Banner */}
-      <header className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 sm:p-8">
+      <header className="cyber-panel relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 sm:p-8">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+            <p className="cyber-kicker mb-2">Campus grid // Central exchange</p>
+            <h1 className="cyber-title text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
               Campus Lost & Found Hub
             </h1>
             <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
@@ -33,7 +34,7 @@ export default function DashboardPage() {
           </div>
           <Link
             to="/report"
-            className="inline-flex items-center justify-center rounded-xl bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500"
+            className="cyber-primary inline-flex items-center justify-center rounded-xl bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500"
           >
             + Report Item
           </Link>
@@ -71,14 +72,14 @@ export default function DashboardPage() {
 
       {/* Explore Categories */}
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Browse by Category</h2>
+        <h2 className="cyber-title text-xl font-bold text-slate-900 dark:text-slate-100">Browse by Category</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               to="/items"
               onClick={() => setSelectedCategoryId(cat.id)}
-              className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-cyan-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="cyber-grid-card flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-cyan-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
               <span className="text-3xl">{cat.icon}</span>
               <span className="mt-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -92,7 +93,7 @@ export default function DashboardPage() {
       {/* Recent Items Section */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Recently Reported</h2>
+          <h2 className="cyber-title text-xl font-bold text-slate-900 dark:text-slate-100">Recently Reported</h2>
           <Link to="/items" className="text-sm font-semibold text-cyan-600 hover:text-cyan-500">
             View All ({items.length}) →
           </Link>
@@ -108,7 +109,7 @@ export default function DashboardPage() {
               <Link
                 key={item.id}
                 to={`/items/${item.id}`}
-                className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                className="cyber-grid-card group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
               >
                 <div>
                   <span

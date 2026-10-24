@@ -32,7 +32,8 @@ export default function ReviewPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+        <p className="cyber-kicker mb-2">Neural assistant // Project feedback</p>
+        <h1 className="cyber-title text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
           AI Review
         </h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
@@ -43,7 +44,7 @@ export default function ReviewPage() {
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8"
+        className="cyber-panel space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8"
       >
         <div className="space-y-1.5">
           <Label htmlFor="prompt" className="text-foreground">
@@ -78,7 +79,7 @@ export default function ReviewPage() {
         <section
           aria-live="polite"
           aria-labelledby="review-summary"
-          className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8"
+          className="cyber-panel grid gap-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8"
         >
           <span
             className={`justify-self-start rounded-full px-3 py-1 text-sm font-semibold capitalize ${READINESS_STYLE[review.data.readiness]}`}

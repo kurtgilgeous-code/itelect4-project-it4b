@@ -5,6 +5,8 @@ import './index.css'
 import App from './App'
 import { BrowserRouter } from 'react-router'
 
+document.documentElement.classList.add('dark')
+
 // Initialize QueryClient for TanStack Query
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -77,10 +77,10 @@ export default function ItemsPage() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategoryId(null)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+            className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
               selectedCategoryId === null
                 ? 'bg-cyan-600 text-white'
-                : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+              : 'border-slate-200 bg-slate-200 text-slate-700 hover:bg-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
             }`}
           >
             All Categories
@@ -89,10 +89,10 @@ export default function ItemsPage() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategoryId(cat.id === selectedCategoryId ? null : cat.id)}
-              className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition ${
+              className={`flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition ${
                 selectedCategoryId === cat.id
                   ? 'bg-cyan-600 text-white'
-                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                  : 'border-slate-200 bg-slate-200 text-slate-700 hover:bg-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
               }`}
             >
               <span>{cat.icon}</span>
@@ -118,7 +118,7 @@ export default function ItemsPage() {
             <Link
               key={item.id}
               to={`/items/${item.id}`}
-              className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-500/50 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="cyber-grid-card group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-500/50 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
               <div>
                 <div className="flex items-center justify-between gap-2">

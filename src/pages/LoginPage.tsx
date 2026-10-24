@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
   const token = useAuthStore((state) => state.token);
   const setSession = useAuthStore((state) => state.setSession);
   const navigate = useNavigate();
@@ -44,9 +44,9 @@ export default function LoginPage() {
         <button
           onClick={() => setIsDark((s) => !s)}
           className="cursor-pointer rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium shadow-sm transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-          title="Toggle Theme"
+          title="Toggle neon theme"
         >
-          {isDark ? "☀️ Light" : "🌙 Dark"}
+          {isDark ? "◉ NEON ON" : "◯ NEON OFF"}
         </button>
       </div>
 
@@ -54,10 +54,10 @@ export default function LoginPage() {
         {/* Brand Header */}
         <div className="text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-600 text-2xl text-white shadow-md">
-            🔍
+            ⌕
           </div>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-            Campus Lost & Found
+          <h1 className="cyber-title mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+            LOST<span className="text-fuchsia-400">//</span>FOUND
           </h1>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             Sign in to report items, file claims, or access staff tools.
