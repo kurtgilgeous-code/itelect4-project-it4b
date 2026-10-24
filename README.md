@@ -6,8 +6,8 @@ A cyberpunk-themed campus lost-and-found app for browsing reports, reporting fou
 
 ## Live deployment
 
-- Frontend: [https://itelect4-project-it4b.vercel.app](https://itelect4-project-it4b.vercel.app)
-- Backend health: [https://itelect4-backend.vercel.app/api/health](https://itelect4-backend.vercel.app/api/health)
+- Frontend: [https://itelect4-project-it4b-chi.vercel.app](https://itelect4-project-it4b-chi.vercel.app)
+- Backend health: [https://itelect4-backend-rosy.vercel.app/api/health](https://itelect4-backend-rosy.vercel.app/api/health)
 
 ## Local setup
 
