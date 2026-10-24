@@ -1,137 +1,42 @@
-# Campus Lost & Found — 8‑Bit Dashboard
+# Campus Lost & Found
 
-A lightweight demo app for tracking found items and claim workflows with a playful 8‑bit UI.
+[![CI](https://github.com/kurtgilgeous-code/itelect4-project-it4b/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kurtgilgeous-code/itelect4-project-it4b/actions/workflows/ci.yml)
 
-## Backend and deployment
+A cyberpunk-themed campus lost-and-found app for browsing reports, reporting found or lost items, submitting claims, and getting AI feedback on project descriptions.
 
-The frontend uses `itelect4-backend` for authentication, categories, items, claims, and AI project reviews. Set `VITE_API_URL` to the backend origin (without `/api` or a trailing slash). For local development, copy `.env.example` to `.env.development.local`; for Vercel, configure the variable in the frontend project's environment settings.
+## Live deployment
 
-For Vercel, set `VITE_API_URL` to the deployed backend origin in the frontend project's environment variables. Set the backend's `CORS_ORIGIN` to the frontend's exact deployed origin and redeploy the backend. Do not put backend secrets in frontend variables. Register an account at `/register`; newly registered accounts can submit items and claims. Set a trusted staff account's `role` to `admin` in MongoDB to enable the admin claims queue.
+- Frontend: [https://itelect4-project-it4b.vercel.app](https://itelect4-project-it4b.vercel.app)
+- Backend health: [https://itelect4-backend.vercel.app/api/health](https://itelect4-backend.vercel.app/api/health)
 
-The root `vercel.json` rewrites client-side routes to the SPA entry point so links such as `/login` work when opened or refreshed directly.
+## Local setup
 
-**Quick Start**
+1. Use Node.js 24 or newer and run `npm ci`.
+2. Copy `.env.example` to `.env.development.local` and set `VITE_API_URL=http://localhost:4000`.
+3. Start the backend in the `itelect4-backend` repository.
+4. Start the frontend with `npm run dev`. The default Vite port is `5173`.
 
-- Install dependencies:
+## Scripts
 
-  `npm install`
-- Run the dev server:
+- `npm run dev` starts the Vite development server.
+- `npm test` runs the component, hook, and form tests.
+- `npm run test:watch` reruns tests while files change.
+- `npm run lint` checks the code with ESLint.
+- `npm run build` type-checks and creates the production bundle.
 
-  `npm run dev`
-- Build for production:
+## Architecture
 
-  `npm run build`
-
-**Project Highlights**
-
-- Status-aware item sorting (Pending → Approved → Rejected → Unclaimed)
-- Selectable users and items; `Switch Profile` cycles to the next user
-- Live item and category data from the Lost & Found API
-- Protected AI project reviews through the backend's Gemini endpoint
-
-**Important Files**
-
-- App entry and main UI: [src/App.tsx](src/App.tsx)
-- User card component: [src/components/UserCard.tsx](src/components/UserCard.tsx)
-- Item card component: [src/components/ItemCard.tsx](src/components/ItemCard.tsx)
-- Claim display: [src/components/ClaimBadge.tsx](src/components/ClaimBadge.tsx)
-- Types and domain models: [src/types/index.ts](src/types/index.ts)
-
-**Development Notes**
-
-- The app is built with Vite + React + TypeScript. If you see type-only import warnings, ensure TypeScript is at a compatible version.
-- `npm run build` has been verified locally and produces a working production bundle.
-
-**Pushing to GitHub**
-
-1. Create a repo on GitHub and copy its remote URL.
-2. From the project root run:
-
-  `git init`
-  `git add .`
-  `git commit -m "Initial commit — Campus Lost & Found"`
-  `git branch -M main`
-  `git remote add origin <YOUR_REMOTE_URL>`
-  `git push -u origin main`
-
-**License**
-
-MIT — feel free to change.
-
----
-
-If you'd like, I can open a branch, create a starter commit, or prepare a minimal `.github/workflows/` CI file for you.# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```mermaid
+flowchart LR
+  Browser[React + TypeScript + Vite] -->|HTTPS JSON API + bearer token| API[Express backend]
+  API -->|Mongoose| DB[(MongoDB Atlas)]
+  API -->|Server-side API key| Gemini[Gemini AI]
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The browser talks only to the backend. The Gemini API key is held by the backend and must never be placed in a frontend environment variable.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## CI and tests
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+GitHub Actions runs ESLint, the test suite, and the production build on every push and on pull requests to `main`. Frontend tests run in jsdom and cover an item component, a custom hook, and validation that blocks an invalid AI request.
 
-```
+**AI-use disclosure:** AI tools assisted with implementation and test drafting; the changes and test results were reviewed locally.
