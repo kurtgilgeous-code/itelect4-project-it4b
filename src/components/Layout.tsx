@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import useAuthStore from "../store/authStore";
 
 export default function Layout() {
   const [isDark, setIsDark] = useState(true);
   const { token, user, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -81,7 +87,7 @@ export default function Layout() {
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.name}</span>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="cursor-pointer rounded-xl border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   Logout
